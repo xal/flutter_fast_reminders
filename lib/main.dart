@@ -4,31 +4,23 @@
 
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+var whoWidget;
+var whatWidget;
+var whenWidget;
 
-ReminderBuilder reminderBuilder;
-ReminderWidget whoWidget;
-ReminderWidget whatWidget;
-ReminderWidget whenWidget;
+var notifications;
+var whoStr;
+var whatStr;
+var whenDate;
 
 var textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
 typedef void TextFunc(BuildContext context, String text);
 typedef void DateFunc(BuildContext context, DateTime date);
-
-void whatCallback(BuildContext context, String text) {
-  reminderBuilder.what = text;
-  moveTo(context, whoWidget);
-}
-
-void whoCallback(BuildContext context, String text) {
-  reminderBuilder.who = text;
-  moveTo(context, whenWidget);
-}
 
 void moveTo(BuildContext context, ReminderWidget widget) {
   Navigator.push(
@@ -38,29 +30,27 @@ void moveTo(BuildContext context, ReminderWidget widget) {
 }
 
 void dateCallback(BuildContext context, DateTime date) {
-  reminderBuilder.when = date;
-  var message = reminderBuilder.createMessage();
+  whenDate = date;
 
-  var duration = new Duration(seconds: 1);
+  var s1 = s(1);
   Scaffold.of(context).showSnackBar(new SnackBar(
-    content: new Text("Scheduled: " + message),
-    duration: duration,
+    content: new Text("Scheduled: " + message()),
+    duration: s1,
   ));
 
-  Future.delayed(duration, () {
+  schedule(message());
+  Future.delayed(s1, () {
     Navigator.popUntil(context, (route) => route.isFirst);
     SystemNavigator.pop();
   });
 }
 
 void main() {
-  var notifications = new FlutterLocalNotificationsPlugin();
+  notifications = new FlutterLocalNotificationsPlugin();
 
   notifications.initialize(new InitializationSettings(
       new AndroidInitializationSettings('ic_access_alarm_black_24dp'),
       new IOSInitializationSettings()));
-
-  reminderBuilder = new ReminderBuilder(notifications);
 
   var pink = Colors.pink;
   var blue = Colors.blue;
@@ -146,10 +136,16 @@ DurationTile date(Color color, Duration duration, String text) =>
     DurationTile(color, duration, text, dateCallback);
 
 IconTile what(Color color, IconData icon, String text) =>
-    IconTile(color, icon, text, whatCallback);
+    IconTile(color, icon, text, (context, text) {
+      whatStr = text;
+      moveTo(context, whenWidget);
+    });
 
 IconTile who(Color color, IconData icon, String text) =>
-    IconTile(color, icon, text, whoCallback);
+    IconTile(color, icon, text, (context, text) {
+      whoStr = text;
+      moveTo(context, whenWidget);
+    });
 
 class ReminderWidget extends StatelessWidget {
   final String _title;
@@ -248,34 +244,24 @@ class DurationTile extends Tile<DateFunc> {
   }
 }
 
-class ReminderBuilder {
-  FlutterLocalNotificationsPlugin notifications;
-
-  ReminderBuilder(this.notifications);
-
-  String who;
-  String what;
-  DateTime when;
-
-  Future scheduleNotification(String message) async {
-    await notifications.schedule(
-        0,
-        'Reminder',
-        message,
-        when,
-        new NotificationDetails(
-            new AndroidNotificationDetails(
-              'id',
-              'Reminders',
-              'Notifications',
-            ),
-            new IOSNotificationDetails()));
-  }
-
-  String createMessage() =>
-      what +
-      ' for ' +
-      who +
-      " at " +
-      formatDate(when, [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
+Future schedule(String message) async {
+  await notifications.schedule(
+      0,
+      'Reminder',
+      message,
+      whenDate,
+      new NotificationDetails(
+          new AndroidNotificationDetails(
+            'id',
+            'Reminders',
+            'Notifications',
+          ),
+          new IOSNotificationDetails()));
 }
+
+String message() =>
+    whatStr +
+    ' for ' +
+    whoStr +
+    " at " +
+    formatDate(whenDate, [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
