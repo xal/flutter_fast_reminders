@@ -19,28 +19,28 @@ var whenDate;
 
 var textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
-typedef void TextFunc(BuildContext context, String text);
-typedef void DateFunc(BuildContext context, DateTime date);
+typedef void TextFunc(BuildContext ctx, String text);
+typedef void DateFunc(BuildContext ctx, DateTime date);
 
-void moveTo(BuildContext context, ReminderWidget widget) {
+void moveTo(BuildContext ctx, ReminderWidget widget) {
   Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => widget),
+    ctx,
+    MaterialPageRoute(builder: (ctx) => widget),
   );
 }
 
-void dateCallback(BuildContext context, DateTime date) {
+void dateCallback(BuildContext ctx, DateTime date) {
   whenDate = date;
 
   var s1 = s(1);
-  Scaffold.of(context).showSnackBar(SnackBar(
+  Scaffold.of(ctx).showSnackBar(SnackBar(
     content: Text("Scheduled: " + message()),
     duration: s1,
   ));
 
   schedule(message());
   Future.delayed(s1, () {
-    Navigator.popUntil(context, (route) => route.isFirst);
+    Navigator.popUntil(ctx, (route) => route.isFirst);
     SystemNavigator.pop();
   });
 }
@@ -136,15 +136,15 @@ DurationTile date(Color color, Duration duration, String text) =>
     DurationTile(color, duration, text, dateCallback);
 
 IconTile what(Color color, IconData icon, String text) =>
-    IconTile(color, icon, text, (context, text) {
+    IconTile(color, icon, text, (ctx, text) {
       whatStr = text;
-      moveTo(context, whoWidget);
+      moveTo(ctx, whoWidget);
     });
 
 IconTile who(Color color, IconData icon, String text) =>
-    IconTile(color, icon, text, (context, text) {
+    IconTile(color, icon, text, (ctx, text) {
       whoStr = text;
-      moveTo(context, whenWidget);
+      moveTo(ctx, whenWidget);
     });
 
 class ReminderWidget extends StatelessWidget {
@@ -154,7 +154,7 @@ class ReminderWidget extends StatelessWidget {
   ReminderWidget(this._title, this._tiles);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
     return Scaffold(
         appBar: AppBar(
           title: Text(_title),
@@ -179,14 +179,14 @@ abstract class Tile<T> extends StatelessWidget {
 
   final T callback;
 
-  void onTap(BuildContext context);
+  void onTap(BuildContext ctx);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
     return Card(
       color: bg,
       child: InkWell(
-        onTap: () => onTap(context),
+        onTap: () => onTap(ctx),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(4.0),
@@ -221,8 +221,8 @@ class IconTile extends Tile<TextFunc> {
             callback);
 
   @override
-  void onTap(BuildContext context) {
-    callback(context, text);
+  void onTap(BuildContext ctx) {
+    callback(ctx, text);
   }
 }
 
@@ -239,8 +239,8 @@ class DurationTile extends Tile<DateFunc> {
             callback);
 
   @override
-  void onTap(BuildContext context) {
-    callback(context, DateTime.now().add(duration));
+  void onTap(BuildContext ctx) {
+    callback(ctx, DateTime.now().add(duration));
   }
 }
 
