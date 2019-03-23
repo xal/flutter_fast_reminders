@@ -33,8 +33,8 @@ void dateCallback(BuildContext context, DateTime date) {
   whenDate = date;
 
   var s1 = s(1);
-  Scaffold.of(context).showSnackBar(new SnackBar(
-    content: new Text("Scheduled: " + message()),
+  Scaffold.of(context).showSnackBar(SnackBar(
+    content: Text("Scheduled: " + message()),
     duration: s1,
   ));
 
@@ -46,11 +46,11 @@ void dateCallback(BuildContext context, DateTime date) {
 }
 
 void main() {
-  notifications = new FlutterLocalNotificationsPlugin();
+  notifications = FlutterLocalNotificationsPlugin();
 
-  notifications.initialize(new InitializationSettings(
-      new AndroidInitializationSettings('ic_access_alarm_black_24dp'),
-      new IOSInitializationSettings()));
+  notifications.initialize(InitializationSettings(
+      AndroidInitializationSettings('ic_access_alarm_black_24dp'),
+      IOSInitializationSettings()));
 
   var pink = Colors.pink;
   var blue = Colors.blue;
@@ -118,7 +118,7 @@ void main() {
     ],
   );
 
-  runApp(new MaterialApp(
+  runApp(MaterialApp(
     title: 'Fast reminders',
     home: whatWidget,
   ));
@@ -156,12 +156,12 @@ class ReminderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: new AppBar(
-          title: new Text(_title),
+        appBar: AppBar(
+          title: Text(_title),
         ),
-        body: new Padding(
+        body: Padding(
             padding: const EdgeInsets.only(top: 18.0),
-            child: new GridView.count(
+            child: GridView.count(
               crossAxisCount: 4,
               children: _tiles,
               mainAxisSpacing: 4.0,
@@ -183,12 +183,12 @@ abstract class Tile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Card(
+    return Card(
       color: bg,
-      child: new InkWell(
+      child: InkWell(
         onTap: () => onTap(context),
-        child: new Center(
-          child: new Padding(
+        child: Center(
+          child: Padding(
             padding: const EdgeInsets.all(4.0),
             child: content,
           ),
@@ -205,14 +205,14 @@ class IconTile extends Tile<TextFunc> {
   IconTile(backgroundColor, this.icon, this.text, callback)
       : super(
             backgroundColor,
-            new Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                new Text(
+                Text(
                   text,
                   style: textStyle,
                 ),
-                new Icon(
+                Icon(
                   icon,
                   color: Colors.white,
                 )
@@ -232,7 +232,7 @@ class DurationTile extends Tile<DateFunc> {
   DurationTile(backgroundColor, this.duration, text, callback)
       : super(
             backgroundColor,
-            new Text(
+            Text(
               text,
               style: textStyle,
             ),
@@ -240,7 +240,7 @@ class DurationTile extends Tile<DateFunc> {
 
   @override
   void onTap(BuildContext context) {
-    callback(context, new DateTime.now().add(duration));
+    callback(context, DateTime.now().add(duration));
   }
 }
 
@@ -250,13 +250,13 @@ Future schedule(String message) async {
       'Reminder',
       message,
       whenDate,
-      new NotificationDetails(
-          new AndroidNotificationDetails(
+      NotificationDetails(
+          AndroidNotificationDetails(
             'id',
             'Reminders',
             'Notifications',
           ),
-          new IOSNotificationDetails()));
+          IOSNotificationDetails()));
 }
 
 String message() =>
