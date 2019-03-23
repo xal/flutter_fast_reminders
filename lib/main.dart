@@ -1,4 +1,3 @@
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -78,28 +77,28 @@ void main() {
     ],
   );
   whenWidget = ReminderWidget(
-    "When...",
+    "After...",
     [
-      date(pink, s(5), "in 5s"),
-      date(pink, s(30), "in 30s"),
-      date(pink, m(1), "in 1m"),
-      date(pink, m(2), "in 2m"),
-      date(deepOrange, m(5), "in 5m"),
-      date(deepOrange, m(10), "in 10m"),
-      date(deepOrange, m(15), "in 15m"),
-      date(deepOrange, m(30), "in 30m"),
-      date(amber, h(1), "in 1h"),
-      date(amber, h(1), "in 2h"),
-      date(amber, h(1), "in 6h"),
-      date(amber, h(1), "in 12h"),
-      date(green, d(1), "in 1d"),
-      date(green, d(1), "in 2d"),
-      date(green, d(1), "in 7d"),
-      date(green, d(1), "in 14d"),
-      date(blue, d(30), "in 30d"),
-      date(blue, d(60), "in 60d"),
-      date(blue, d(182), "in 1/2y"),
-      date(blue, d(365), "in 1y"),
+      date(pink, s(5), "5s"),
+      date(pink, s(30), "30s"),
+      date(pink, m(1), "1m"),
+      date(pink, m(2), "2m"),
+      date(deepOrange, m(5), "5m"),
+      date(deepOrange, m(10), "10m"),
+      date(deepOrange, m(15), "15m"),
+      date(deepOrange, m(30), "30m"),
+      date(amber, h(1), "1h"),
+      date(amber, h(2), "2h"),
+      date(amber, h(6), "6h"),
+      date(amber, h(12), "12h"),
+      date(green, d(1), "1d"),
+      date(green, d(2), "2d"),
+      date(green, d(7), "7d"),
+      date(green, d(14), "14d"),
+      date(blue, d(30), "30d"),
+      date(blue, d(60), "60d"),
+      date(blue, d(182), "1/2y"),
+      date(blue, d(365), "1y"),
     ],
   );
   runApp(MaterialApp(
@@ -237,4 +236,4 @@ String message() =>
     ' for ' +
     whoStr +
     " at " +
-    formatDate(whenDate, [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
+    whenDate;
