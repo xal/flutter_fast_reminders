@@ -24,6 +24,7 @@ dependencies:
   flutter_datetime_picker: ^1.1.4
   date_format: ^1.0.6
   font_awesome_flutter: ^8.4.0
+#  shared_preferences: ^0.5.1+2
 
 
 

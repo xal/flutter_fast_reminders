@@ -5,8 +5,10 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 ReminderBuilder reminderBuilder;
 ReminderWidget whoWidget;
@@ -15,8 +17,8 @@ ReminderWidget whenWidget;
 
 var textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
-typedef void onTextTapFunc(BuildContext context, String text);
-typedef void onDateTapFunc(BuildContext context, DateTime date);
+typedef void TextFunc(BuildContext context, String text);
+typedef void DateFunc(BuildContext context, DateTime date);
 
 void whatCallback(BuildContext context, String text) {
   reminderBuilder.what = text;
@@ -38,83 +40,91 @@ void moveTo(BuildContext context, ReminderWidget widget) {
 void dateCallback(BuildContext context, DateTime date) {
   reminderBuilder.when = date;
   var message = reminderBuilder.createMessage();
-  reminderBuilder.scheduleNotification(message);
 
+  var duration = new Duration(seconds: 1);
   Scaffold.of(context).showSnackBar(new SnackBar(
     content: new Text("Scheduled: " + message),
-    duration: new Duration(seconds: 3),
+    duration: duration,
   ));
 
-//  Navigator.popUntil(context, (route) => route.isFirst);
+  Future.delayed(duration, () {
+    Navigator.popUntil(context, (route) => route.isFirst);
+    SystemNavigator.pop();
+  });
 }
 
 void main() {
+  var notifications = new FlutterLocalNotificationsPlugin();
 
-  var flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-
-  flutterLocalNotificationsPlugin.initialize(new InitializationSettings(
+  notifications.initialize(new InitializationSettings(
       new AndroidInitializationSettings('ic_access_alarm_black_24dp'),
       new IOSInitializationSettings()));
 
-  reminderBuilder = new ReminderBuilder(flutterLocalNotificationsPlugin);
+  reminderBuilder = new ReminderBuilder(notifications);
 
+  var pink = Colors.pink;
+  var blue = Colors.blue;
+  var deepOrange = Colors.deepOrange;
+  var green = Colors.green;
   whatWidget = ReminderWidget(
     "Reminder about...",
     [
-      whatTile(Colors.pink, Icons.add, "Something"),
-      whatTile(Colors.lightBlue, Icons.add_shopping_cart, "Buy"),
-      whatTile(Colors.lightBlue, Icons.call, "Call"),
-      whatTile(Colors.lightBlue, Icons.message, "Message"),
-      whatTile(Colors.lightBlue, Icons.monetization_on, "Debt"),
-      whatTile(Colors.lightBlue, Icons.monetization_on, "Pay"),
-      whatTile(Colors.lightBlue, Icons.help, "Help"),
-      whatTile(Colors.lightBlue, Icons.help, "Give"),
-      whatTile(Colors.lightBlue, Icons.help, "Get"),
-      whatTile(Colors.lightBlue, Icons.place, "Meet"),
-      whatTile(Colors.lightBlue, Icons.place, "Deadline"),
-      whatTile(Colors.lightBlue, Icons.place, "Check"),
+      what(Colors.grey, FontAwesomeIcons.questionCircle, "Something"),
+      what(Colors.indigo, Icons.add_shopping_cart, "Buy"),
+      what(blue, Icons.call, "Call"),
+      what(Colors.deepPurple, Icons.message, "Message"),
+      what(Colors.teal, Icons.monetization_on, "Debt"),
+      what(Colors.black, Icons.attach_money, "Pay"),
+      what(Colors.cyan, Icons.help, "Help"),
+      what(pink, FontAwesomeIcons.handHoldingHeart, "Give"),
+      what(Colors.redAccent, FontAwesomeIcons.handPointer, "Get"),
+      what(Colors.brown, Icons.place, "Meet"),
+      what(Colors.red, Icons.date_range, "Deadline"),
+      what(Colors.deepPurpleAccent, Icons.check_circle, "Check"),
     ],
   );
+
   whoWidget = ReminderWidget(
-    "Related to...",
+    "For...",
     [
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Someone"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Me"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Partner"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Family"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Friend"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Work"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Client"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Boss"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Health"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Car"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Home"),
-      whoTile(Colors.pink, FontAwesomeIcons.heart, "Service"),
+      who(Colors.grey, FontAwesomeIcons.questionCircle, "Someone"),
+      who(Colors.black, Icons.account_circle, "Me"),
+      who(pink, FontAwesomeIcons.heart, "Partner"),
+      who(green, FontAwesomeIcons.users, "Family"),
+      who(blue, FontAwesomeIcons.userFriends, "Friend"),
+      who(Colors.purple, FontAwesomeIcons.building, "Work"),
+      who(Colors.purpleAccent, FontAwesomeIcons.briefcase, "Client"),
+      who(Colors.deepPurpleAccent, FontAwesomeIcons.crown, "Boss"),
+      who(Colors.red, FontAwesomeIcons.heartBroken, "Health"),
+      who(pink, FontAwesomeIcons.car, "Car"),
+      who(deepOrange, FontAwesomeIcons.home, "Home"),
+      who(Colors.brown, FontAwesomeIcons.conciergeBell, "Service"),
     ],
   );
+  var amber = Colors.amber;
   whenWidget = ReminderWidget(
     "When...",
     [
-      dateTile(Colors.pink, Duration(seconds: 5), "in 5s"),
-      dateTile(Colors.pink, Duration(seconds: 30), "in 30s"),
-      dateTile(Colors.pink, Duration(minutes: 1), "in 1m"),
-      dateTile(Colors.pink, Duration(minutes: 2), "in 2m"),
-      dateTile(Colors.deepOrange, Duration(minutes: 5), "in 5m"),
-      dateTile(Colors.deepOrange, Duration(minutes: 10), "in 10m"),
-      dateTile(Colors.deepOrange, Duration(minutes: 15), "in 15m"),
-      dateTile(Colors.deepOrange, Duration(minutes: 30), "in 30m"),
-      dateTile(Colors.amber, Duration(hours: 1), "in 1h"),
-      dateTile(Colors.amber, Duration(hours: 1), "in 2h"),
-      dateTile(Colors.amber, Duration(hours: 1), "in 6h"),
-      dateTile(Colors.amber, Duration(hours: 1), "in 12h"),
-      dateTile(Colors.green, Duration(days: 1), "in 1d"),
-      dateTile(Colors.green, Duration(days: 1), "in 2d"),
-      dateTile(Colors.green, Duration(days: 1), "in 7d"),
-      dateTile(Colors.green, Duration(days: 1), "in 14d"),
-      dateTile(Colors.blue, Duration(days: 30), "in 30d"),
-      dateTile(Colors.blue, Duration(days: 60), "in 60d"),
-      dateTile(Colors.blue, Duration(days: 182), "in 1/2y"),
-      dateTile(Colors.blue, Duration(days: 365), "in 1y"),
+      date(pink, s(5), "in 5s"),
+      date(pink, s(30), "in 30s"),
+      date(pink, m(1), "in 1m"),
+      date(pink, m(2), "in 2m"),
+      date(deepOrange, m(5), "in 5m"),
+      date(deepOrange, m(10), "in 10m"),
+      date(deepOrange, m(15), "in 15m"),
+      date(deepOrange, m(30), "in 30m"),
+      date(amber, h(1), "in 1h"),
+      date(amber, h(1), "in 2h"),
+      date(amber, h(1), "in 6h"),
+      date(amber, h(1), "in 12h"),
+      date(green, d(1), "in 1d"),
+      date(green, d(1), "in 2d"),
+      date(green, d(1), "in 7d"),
+      date(green, d(1), "in 14d"),
+      date(blue, d(30), "in 30d"),
+      date(blue, d(60), "in 60d"),
+      date(blue, d(182), "in 1/2y"),
+      date(blue, d(365), "in 1y"),
     ],
   );
 
@@ -124,14 +134,22 @@ void main() {
   ));
 }
 
-DurationReminderTile dateTile(Color color, Duration duration, String text) =>
-    DurationReminderTile(color, duration, text, dateCallback);
+Duration s(int s) => Duration(seconds: s);
 
-TextIconReminderTile whatTile(Color color, IconData icon, String text) =>
-    TextIconReminderTile(color, icon, text, whatCallback);
+Duration m(int m) => Duration(minutes: m);
 
-TextIconReminderTile whoTile(Color color, IconData icon, String text) =>
-    TextIconReminderTile(color, icon, text, whoCallback);
+Duration h(int h) => Duration(hours: h);
+
+Duration d(int d) => Duration(days: d);
+
+DurationTile date(Color color, Duration duration, String text) =>
+    DurationTile(color, duration, text, dateCallback);
+
+IconTile what(Color color, IconData icon, String text) =>
+    IconTile(color, icon, text, whatCallback);
+
+IconTile who(Color color, IconData icon, String text) =>
+    IconTile(color, icon, text, whoCallback);
 
 class ReminderWidget extends StatelessWidget {
   final String _title;
@@ -157,11 +175,11 @@ class ReminderWidget extends StatelessWidget {
   }
 }
 
-abstract class ReminderTile<T> extends StatelessWidget {
-  final Color backgroundColor;
+abstract class Tile<T> extends StatelessWidget {
+  final Color bg;
   final Widget content;
 
-  ReminderTile(this.backgroundColor, this.content, this.callback);
+  Tile(this.bg, this.content, this.callback);
 
   final T callback;
 
@@ -170,7 +188,7 @@ abstract class ReminderTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Card(
-      color: backgroundColor,
+      color: bg,
       child: new InkWell(
         onTap: () => onTap(context),
         child: new Center(
@@ -184,11 +202,11 @@ abstract class ReminderTile<T> extends StatelessWidget {
   }
 }
 
-class TextIconReminderTile extends ReminderTile<onTextTapFunc> {
-  final IconData iconData;
+class IconTile extends Tile<TextFunc> {
+  final IconData icon;
   final String text;
 
-  TextIconReminderTile(backgroundColor, this.iconData, this.text, callback)
+  IconTile(backgroundColor, this.icon, this.text, callback)
       : super(
             backgroundColor,
             new Column(
@@ -199,7 +217,7 @@ class TextIconReminderTile extends ReminderTile<onTextTapFunc> {
                   style: textStyle,
                 ),
                 new Icon(
-                  iconData,
+                  icon,
                   color: Colors.white,
                 )
               ],
@@ -212,10 +230,10 @@ class TextIconReminderTile extends ReminderTile<onTextTapFunc> {
   }
 }
 
-class DurationReminderTile extends ReminderTile<onDateTapFunc> {
+class DurationTile extends Tile<DateFunc> {
   final Duration duration;
 
-  DurationReminderTile(backgroundColor, this.duration, text, callback)
+  DurationTile(backgroundColor, this.duration, text, callback)
       : super(
             backgroundColor,
             new Text(
@@ -231,29 +249,27 @@ class DurationReminderTile extends ReminderTile<onDateTapFunc> {
 }
 
 class ReminderBuilder {
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  FlutterLocalNotificationsPlugin notifications;
 
-  ReminderBuilder(this.flutterLocalNotificationsPlugin);
+  ReminderBuilder(this.notifications);
 
   String who;
   String what;
   DateTime when;
 
   Future scheduleNotification(String message) async {
-    await flutterLocalNotificationsPlugin.schedule(
-        DateTime.now().millisecondsSinceEpoch,
+    await notifications.schedule(
+        0,
         'Reminder',
         message,
         when,
         new NotificationDetails(
             new AndroidNotificationDetails(
-              'id_fast_reminders_channel',
-              'Fast Reminders',
-              'Reminder notifications',
-              sound: 'slow_spring_board',
-              playSound: true,
+              'id',
+              'Reminders',
+              'Notifications',
             ),
-            new IOSNotificationDetails(sound: "slow_spring_board.aiff")));
+            new IOSNotificationDetails()));
   }
 
   String createMessage() =>
