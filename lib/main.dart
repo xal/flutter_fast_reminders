@@ -18,22 +18,18 @@ var textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 typedef void TextFunc(BuildContext ctx, String text);
 typedef void DateFunc(BuildContext ctx, DateTime date);
 
-void moveTo(BuildContext ctx, ReminderWidget widget) {
-  Navigator.push(
-    ctx,
-    MaterialPageRoute(builder: (ctx) => widget),
-  );
-}
+void moveTo(BuildContext ctx, Widget widget) => Navigator.push(
+      ctx,
+      MaterialPageRoute(builder: (ctx) => widget),
+    );
 
 void dateCallback(BuildContext ctx, DateTime date) {
   whenDate = date;
-
   var s1 = s(1);
   Scaffold.of(ctx).showSnackBar(SnackBar(
     content: Text("Scheduled: " + message()),
     duration: s1,
   ));
-
   schedule(message());
   Future.delayed(s1, () => SystemNavigator.pop());
 }
@@ -181,9 +177,9 @@ abstract class Tile<T> extends StatelessWidget {
 class IconTile extends Tile<TextFunc> {
   final String text;
 
-  IconTile(backgroundColor, icon, this.text, callback)
+  IconTile(bg, icon, this.text, callback)
       : super(
-            backgroundColor,
+            bg,
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
