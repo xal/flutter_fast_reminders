@@ -1,20 +1,20 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-var whoW;
-var whatW;
-var whenW;
+var whoWidget;
+var whatWidget;
+var whenWidget;
 
 var notifications;
-var whoS;
-var whatS;
-var whenD;
+var whoString;
+var whatString;
+var whenDate;
 
 var textStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
 
 typedef void TextFunc(BuildContext ctx, String text);
-typedef void DateFunc(BuildContext ctx, DateTime date);
 
 void moveTo(BuildContext ctx, Widget widget) =>
     Navigator.push(ctx, MaterialPageRoute(builder: (ctx) => widget));
@@ -23,93 +23,89 @@ void main() {
   notifications = FlutterLocalNotificationsPlugin();
   notifications.initialize(InitializationSettings(
       AndroidInitializationSettings('alarm'), IOSInitializationSettings()));
-  var p = Colors.pink;
-  var bl = Colors.blue;
-  var o = Colors.orange;
-  var g = Colors.green;
-  var b = Colors.brown;
-  whatW = ReminderWidget(
+  var pink = Colors.pink;
+  var blue = Colors.blue;
+  var orange = Colors.orange;
+  var green = Colors.green;
+  var brown = Colors.brown;
+  whatWidget = ReminderWidget(
     "About...",
     [
       what(Colors.grey, Icons.device_unknown, "Something"),
-      what(Colors.indigo, Icons.add_shopping_cart, "Buy"),
-      what(bl, Icons.call, "Call"),
-      what(g, Icons.message, "Message"),
+      what(Colors.indigo, Icons.shopping_cart, "Buy"),
+      what(blue, Icons.call, "Call"),
+      what(green, Icons.message, "Message"),
       what(Colors.black, Icons.attach_money, "Pay"),
-      what(o, Icons.help, "Help"),
-      what(b, Icons.place, "Meet"),
+      what(orange, Icons.help, "Help"),
+      what(brown, Icons.place, "Meet"),
       what(Colors.red, Icons.date_range, "Deadline"),
       what(Colors.deepPurpleAccent, Icons.check_circle, "Check")
     ],
   );
-  whoW = ReminderWidget(
+  whoWidget = ReminderWidget(
     "For...",
     [
       who(Colors.grey, Icons.device_unknown, "Someone"),
       who(Colors.black, Icons.account_circle, "Me"),
-      who(p, Icons.favorite, "Love"),
-      who(g, Icons.group, "Family"),
-      who(bl, Icons.group_work, "Friend"),
+      who(pink, Icons.favorite, "Love"),
+      who(green, Icons.group, "Family"),
+      who(blue, Icons.group_work, "Friend"),
       who(Colors.purple, Icons.work, "Work"),
       who(Colors.red, Icons.healing, "Health"),
-      who(p, Icons.directions_car, "Car"),
-      who(o, Icons.home, "Home"),
-      who(b, Icons.build, "Service")
+      who(pink, Icons.directions_car, "Car"),
+      who(orange, Icons.home, "Home"),
+      who(brown, Icons.build, "Service")
     ],
   );
-  whenW = ReminderWidget(
+  whenWidget = ReminderWidget(
     "After...",
     [
-      date(p, s(5)),
-      date(p, s(30)),
-      date(p, m(1)),
-      date(p, m(2)),
-      date(o, m(5)),
-      date(o, m(10)),
-      date(o, m(15)),
-      date(o, m(30)),
-      date(b, h(1)),
-      date(b, h(2)),
-      date(b, h(6)),
-      date(b, h(12)),
-      date(g, d(1)),
-      date(g, d(2)),
-      date(g, d(7)),
-      date(g, d(14)),
-      date(bl, d(30)),
-      date(bl, d(60)),
-      date(bl, d(182)),
-      date(bl, d(365))
+      date(pink, s(5), "5s"),
+      date(pink, s(30), "30s"),
+      date(pink, m(1), "1m"),
+      date(pink, m(2), "2m"),
+      date(orange, m(5), "5m"),
+      date(orange, m(10), "10m"),
+      date(orange, m(15), "15m"),
+      date(orange, m(30), "30m"),
+      date(brown, h(1), "1h"),
+      date(brown, h(2), "2h"),
+      date(brown, h(6), "6h"),
+      date(brown, h(12), "12h"),
+      date(green, d(1), "1d"),
+      date(green, d(2), "2d"),
+      date(green, d(7), "7d"),
+      date(green, d(14), "14d"),
+      date(blue, d(30), "30d"),
+      date(blue, d(60), "60d"),
+      date(blue, d(182), "1/2y"),
+      date(blue, d(365), "1y")
     ],
   );
-  runApp(MaterialApp(title: 'Fast reminders', home: whatW));
+  runApp(MaterialApp(title: 'Fast reminders', home: whatWidget));
 }
 
-List s(int s) => [Duration(seconds: s), "$s s"];
+Duration s(int s) => Duration(seconds: s);
 
-List m(int m) => [Duration(minutes: m), "$m m"];
+Duration m(int m) => Duration(minutes: m);
 
-List h(int h) => [Duration(hours: h), "$h m"];
+Duration h(int h) => Duration(hours: h);
 
-List d(int d) => [Duration(days: d), "$d d"];
+Duration d(int d) => Duration(days: d);
 
-DurationTile date(Color color, List list) =>
-    DurationTile(color, list[0], list[1], (ctx, date) {
-      whenD = date;
-      schedule();
-      SystemNavigator.pop();
-    });
+DurationTile date(Color color, Duration duration, String text) =>
+    DurationTile(color, duration, text);
 
 IconTile what(Color color, IconData icon, String text) =>
     IconTile(color, icon, text, (ctx, text) {
-      whatS = text;
-      moveTo(ctx, whoW);
+      whatString = text;
+      moveTo(ctx, whoWidget);
     });
 
 IconTile who(Color color, IconData icon, String text) =>
     IconTile(color, icon, text, (ctx, text) {
-      whoS = text;
-      moveTo(ctx, whenW);
+      whoString = text;
+      moveTo(ctx, whenWidget);
     });
 
 class ReminderWidget extends StatelessWidget {
@@ -126,13 +122,11 @@ class ReminderWidget extends StatelessWidget {
   }
 }
 
-abstract class Tile<T> extends StatelessWidget {
+abstract class Tile extends StatelessWidget {
   final Color bg;
   final Widget content;
 
-  Tile(this.bg, this.content, this.callback);
-
-  final T callback;
+  Tile(this.bg, this.content);
 
   void onTap(BuildContext ctx);
 
@@ -144,10 +138,12 @@ abstract class Tile<T> extends StatelessWidget {
   }
 }
 
-class IconTile extends Tile<TextFunc> {
+class IconTile extends Tile {
   final String text;
 
-  IconTile(bg, icon, this.text, callback)
+  final TextFunc callback;
+
+  IconTile(bg, icon, this.text, this.callback)
       : super(
             bg,
             Column(
@@ -155,8 +151,7 @@ class IconTile extends Tile<TextFunc> {
                 children: <Widget>[
                   Text(text, style: textStyle),
                   Icon(icon, color: Colors.white)
-                ]),
-            callback);
+                ]));
 
   @override
   void onTap(BuildContext ctx) {
@@ -164,23 +159,27 @@ class IconTile extends Tile<TextFunc> {
   }
 }
 
-class DurationTile extends Tile<DateFunc> {
+class DurationTile extends Tile {
   final Duration duration;
 
-  DurationTile(backgroundColor, this.duration, text, callback)
-      : super(backgroundColor, Text(text, style: textStyle), callback);
+  DurationTile(bg, this.duration, text)
+      : super(bg, Text(text, style: textStyle));
 
   @override
   void onTap(BuildContext ctx) {
-    callback(ctx, DateTime.now().add(duration));
+    whenDate = DateTime.now().add(duration);
+    schedule();
+    SystemNavigator.pop();
   }
 }
 
 Future schedule() => notifications.schedule(
     0,
     'Reminder',
-    whatS + ' for ' + whoS + " at " + whenD,
-    whenD,
+    "$whatString for $whoString at " +
+        formatDate(
+            whenDate, [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]),
+    whenDate,
     NotificationDetails(
         AndroidNotificationDetails('id', 'Reminders', 'Notifications'),
         IOSNotificationDetails()));
