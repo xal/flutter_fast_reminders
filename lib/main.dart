@@ -190,10 +190,9 @@ abstract class Tile<T> extends StatelessWidget {
 }
 
 class IconTile extends Tile<TextFunc> {
-  final IconData icon;
   final String text;
 
-  IconTile(backgroundColor, this.icon, this.text, callback)
+  IconTile(backgroundColor, icon, this.text, callback)
       : super(
             backgroundColor,
             Column(
@@ -235,20 +234,18 @@ class DurationTile extends Tile<DateFunc> {
   }
 }
 
-Future schedule(String message) async {
-  await notifications.schedule(
-      0,
-      'Reminder',
-      message,
-      whenDate,
-      NotificationDetails(
-          AndroidNotificationDetails(
-            'id',
-            'Reminders',
-            'Notifications',
-          ),
-          IOSNotificationDetails()));
-}
+Future schedule(String message) => notifications.schedule(
+    0,
+    'Reminder',
+    message,
+    whenDate,
+    NotificationDetails(
+        AndroidNotificationDetails(
+          'id',
+          'Reminders',
+          'Notifications',
+        ),
+        IOSNotificationDetails()));
 
 String message() =>
     whatStr +
