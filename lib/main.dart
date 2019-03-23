@@ -1,7 +1,3 @@
-// This sample shows creation of a [Card] widget that can be tapped. When
-// tapped this [Card]'s [InkWell] displays an "ink splash" that fills the
-// entire card.
-
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,15 +43,13 @@ void dateCallback(BuildContext ctx, DateTime date) {
 
 void main() {
   notifications = FlutterLocalNotificationsPlugin();
-
   notifications.initialize(InitializationSettings(
-      AndroidInitializationSettings('ic_access_alarm_black_24dp'),
-      IOSInitializationSettings()));
-
+      AndroidInitializationSettings('alarm'), IOSInitializationSettings()));
   var pink = Colors.pink;
   var blue = Colors.blue;
   var deepOrange = Colors.deepOrange;
   var green = Colors.green;
+  var amber = Colors.amber;
   whatWidget = ReminderWidget(
     "Reminder about...",
     [
@@ -73,7 +67,6 @@ void main() {
       what(Colors.deepPurpleAccent, Icons.check_circle, "Check"),
     ],
   );
-
   whoWidget = ReminderWidget(
     "For...",
     [
@@ -91,7 +84,6 @@ void main() {
       who(Colors.brown, FontAwesomeIcons.conciergeBell, "Service"),
     ],
   );
-  var amber = Colors.amber;
   whenWidget = ReminderWidget(
     "When...",
     [
@@ -117,7 +109,6 @@ void main() {
       date(blue, d(365), "in 1y"),
     ],
   );
-
   runApp(MaterialApp(
     title: 'Fast reminders',
     home: whatWidget,
