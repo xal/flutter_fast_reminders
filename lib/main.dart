@@ -35,10 +35,7 @@ void dateCallback(BuildContext ctx, DateTime date) {
   ));
 
   schedule(message());
-  Future.delayed(s1, () {
-    Navigator.popUntil(ctx, (route) => route.isFirst);
-    SystemNavigator.pop();
-  });
+  Future.delayed(s1, () => SystemNavigator.pop());
 }
 
 void main() {
@@ -150,15 +147,10 @@ class ReminderWidget extends StatelessWidget {
         appBar: AppBar(
           title: Text(_title),
         ),
-        body: Padding(
-            padding: const EdgeInsets.only(top: 18.0),
-            child: GridView.count(
-              crossAxisCount: 4,
-              children: _tiles,
-              mainAxisSpacing: 4.0,
-              crossAxisSpacing: 4.0,
-              padding: const EdgeInsets.all(4.0),
-            )));
+        body: GridView.count(
+          crossAxisCount: 4,
+          children: _tiles,
+        ));
   }
 }
 
@@ -179,10 +171,7 @@ abstract class Tile<T> extends StatelessWidget {
       child: InkWell(
         onTap: () => onTap(ctx),
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: content,
-          ),
+          child: content,
         ),
       ),
     );
