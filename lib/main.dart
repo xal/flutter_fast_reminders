@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 var whoWidget;
 var whatWidget;
@@ -45,15 +45,12 @@ void main() {
   whatWidget = ReminderWidget(
     "Reminder about...",
     [
-      what(Colors.grey, FontAwesomeIcons.questionCircle, "Something"),
+      what(Colors.grey, Icons.device_unknown, "Something"),
       what(Colors.indigo, Icons.add_shopping_cart, "Buy"),
       what(blue, Icons.call, "Call"),
       what(Colors.deepPurple, Icons.message, "Message"),
-      what(Colors.teal, Icons.monetization_on, "Debt"),
       what(Colors.black, Icons.attach_money, "Pay"),
       what(Colors.cyan, Icons.help, "Help"),
-      what(pink, FontAwesomeIcons.handHoldingHeart, "Give"),
-      what(Colors.redAccent, FontAwesomeIcons.handPointer, "Get"),
       what(Colors.brown, Icons.place, "Meet"),
       what(Colors.red, Icons.date_range, "Deadline"),
       what(Colors.deepPurpleAccent, Icons.check_circle, "Check"),
@@ -62,18 +59,16 @@ void main() {
   whoWidget = ReminderWidget(
     "For...",
     [
-      who(Colors.grey, FontAwesomeIcons.questionCircle, "Someone"),
+      who(Colors.grey, Icons.device_unknown, "Someone"),
       who(Colors.black, Icons.account_circle, "Me"),
-      who(pink, FontAwesomeIcons.heart, "Partner"),
-      who(green, FontAwesomeIcons.users, "Family"),
-      who(blue, FontAwesomeIcons.userFriends, "Friend"),
-      who(Colors.purple, FontAwesomeIcons.building, "Work"),
-      who(Colors.purpleAccent, FontAwesomeIcons.briefcase, "Client"),
-      who(Colors.deepPurpleAccent, FontAwesomeIcons.crown, "Boss"),
-      who(Colors.red, FontAwesomeIcons.heartBroken, "Health"),
-      who(pink, FontAwesomeIcons.car, "Car"),
-      who(deepOrange, FontAwesomeIcons.home, "Home"),
-      who(Colors.brown, FontAwesomeIcons.conciergeBell, "Service"),
+      who(pink, Icons.favorite, "Partner"),
+      who(green, Icons.group, "Family"),
+      who(blue, Icons.group_work, "Friend"),
+      who(Colors.purple, Icons.work, "Work"),
+      who(Colors.red, Icons.healing, "Health"),
+      who(pink, Icons.directions_car, "Car"),
+      who(deepOrange, Icons.home, "Home"),
+      who(Colors.brown, Icons.build, "Service"),
     ],
   );
   whenWidget = ReminderWidget(
