@@ -138,7 +138,7 @@ DurationTile date(Color color, Duration duration, String text) =>
 IconTile what(Color color, IconData icon, String text) =>
     IconTile(color, icon, text, (context, text) {
       whatStr = text;
-      moveTo(context, whenWidget);
+      moveTo(context, whoWidget);
     });
 
 IconTile who(Color color, IconData icon, String text) =>
