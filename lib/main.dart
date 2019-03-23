@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-
 var whoWidget;
 var whatWidget;
 var whenWidget;
@@ -24,13 +23,8 @@ void moveTo(BuildContext ctx, Widget widget) => Navigator.push(
 
 void dateCallback(BuildContext ctx, DateTime date) {
   whenDate = date;
-  var s1 = s(1);
-  Scaffold.of(ctx).showSnackBar(SnackBar(
-    content: Text("Scheduled: " + message()),
-    duration: s1,
-  ));
-  schedule(message());
-  Future.delayed(s1, () => SystemNavigator.pop());
+  schedule();
+  SystemNavigator.pop();
 }
 
 void main() {
@@ -213,10 +207,10 @@ class DurationTile extends Tile<DateFunc> {
   }
 }
 
-Future schedule(String message) => notifications.schedule(
+Future schedule() => notifications.schedule(
     0,
     'Reminder',
-    message,
+    whatStr + ' for ' + whoStr + " at " + whenDate,
     whenDate,
     NotificationDetails(
         AndroidNotificationDetails(
@@ -225,10 +219,3 @@ Future schedule(String message) => notifications.schedule(
           'Notifications',
         ),
         IOSNotificationDetails()));
-
-String message() =>
-    whatStr +
-    ' for ' +
-    whoStr +
-    " at " +
-    whenDate;
